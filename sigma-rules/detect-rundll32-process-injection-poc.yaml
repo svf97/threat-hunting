@@ -1,0 +1,47 @@
+title: Detect Rundll32.exe Process Injection with Temp Folder Execution (PoC)
+id: 
+status: experimental
+description: Detects rundll32.exe process injection with suspicious temp folder execution, focusing on process creation events and command-line patterns.
+author: Your Name
+references:
+  - https://github.com/SigmaHQ/sigma/blob/master/rules-threat-hunting/windows/process_creation/proc_creation_win_rundll32_by_ordinal.yml
+logsource:
+  category: process_creation
+  product: windows
+detection:
+    selection_img:
+        Image|endswith: '\rundll32.exe'
+        OriginalFileName: 'RUNDLL32.EXE'
+
+    selection_cli:
+        CommandLine|contains:
+            - ',#'
+            - '.dll #'
+            - '.ocx #'  # Common obfuscation in process injection
+
+    selection_temp:
+        ParentImage|contains:
+            - '.*\\AppData\\Local\\Temp\\.*'
+            - '.*\\Temp\\.*'
+    
+    network_connections:
+        Image|endswith:
+            - '\rundll32.exe'
+        DestinationIP:
+            - '10.0.0.0/8'
+            - '172.16.0.0/12'
+            - '192.168.0.0/16'
+            - '127.0.0.1'
+            - '::1'
+            - 'known_whitelisted_ips'
+
+    condition: selection_img and selection_cli and selection_temp and not network_connections
+fields:
+  - Image
+  - ParentImage
+  - CommandLine
+  - DestinationIP
+level: high
+tags:
+  - attack.t1055
+  - attack.execution
