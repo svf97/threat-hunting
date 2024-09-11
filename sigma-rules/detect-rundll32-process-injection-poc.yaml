@@ -2,7 +2,7 @@ title: Detect Rundll32.exe Process Injection with Temp Folder Execution (PoC)
 id: 
 status: experimental
 description: Detects rundll32.exe process injection with suspicious temp folder execution, focusing on process creation events and command-line patterns.
-author: Your Name
+author: Shereen F.
 references:
   - https://github.com/SigmaHQ/sigma/blob/master/rules-threat-hunting/windows/process_creation/proc_creation_win_rundll32_by_ordinal.yml
 logsource:
