@@ -1,0 +1,33 @@
+title: Detect BloodHound Activity via AdFind Execution (Comprehensive)
+id: 
+status: experimental
+description: Detects BloodHound activity via adfind.exe regardless of where BloodHound is executed from, using flexible regex and monitoring various execution contexts.
+author: Shereen F.
+references:
+  - https://github.com/SigmaHQ/sigma/blob/master/rules/windows/file/file_event/file_event_win_bloodhound_collection.yml
+logsource:
+  category: process_creation
+  product: windows
+detection:
+    selection_adfind:
+        Image|endswith: '\adfind.exe'
+        CommandLine|contains|all:
+            - 'objectcategory'
+            - 'trustdmp'            
+
+    selection_bloodhound:
+        CommandLine|re:
+            - '.*[bB]lood[hH]ound.*'  # Matches BloodHound in any command-line execution regardless of location or extension
+        Image|re:
+            - '.*[bB]lood[hH]ound.*'  # Matches BloodHound being executed from any path
+
+    condition: selection_adfind and selection_bloodhound
+fields:
+  - Image
+  - CommandLine
+  - TargetFilename
+level: high
+tags:
+  - attack.t1087
+  - attack.discovery
+  - attack.reconnaissance
