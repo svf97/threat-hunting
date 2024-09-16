@@ -1,4 +1,4 @@
-title: Detect BloodHound Activity via AdFind Execution (Comprehensive)
+title: Detect BloodHound Activity via AdFind Execution (PoC)
 id: 
 status: experimental
 description: Detects BloodHound activity via adfind.exe regardless of where BloodHound is executed from, using flexible regex and monitoring various execution contexts.
